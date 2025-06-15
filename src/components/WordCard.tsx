@@ -73,11 +73,15 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     return word.replace(regex, `<span class="bg-yellow-300 text-red-600 font-bold underline">$1</span>`);
   };
 
-  const playPronunciation = (word: string) => {
+  const playPronunciation = (text: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(word);
+      // 停止当前播放的语音
+      speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
       utterance.rate = 0.8;
+      utterance.volume = 1.0;
       speechSynthesis.speak(utterance);
     }
   };
@@ -235,10 +239,19 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
           </h3>
           <div className="space-y-2">
             {wordData.collocations.map((collocation, index) => (
-              <div key={index} className="flex items-center gap-3 p-2 bg-white rounded-md">
-                <span className="font-medium text-red-700 min-w-fit">• {collocation.phrase}</span>
-                <span className="text-gray-700">{collocation.meaning}</span>
-                <Badge variant="secondary" className="ml-auto text-xs">
+              <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-md border border-red-100">
+                <div className="flex items-center gap-2 flex-1">
+                  <span className="font-medium text-red-700">• {collocation.phrase}</span>
+                  <button
+                    onClick={() => playPronunciation(collocation.phrase)}
+                    className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs"
+                    title="播放搭配发音"
+                  >
+                    🔊
+                  </button>
+                </div>
+                <span className="text-gray-700 flex-1">{collocation.meaning}</span>
+                <Badge variant="secondary" className="text-xs">
                   {collocation.context}
                 </Badge>
               </div>
