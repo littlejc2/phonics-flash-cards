@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -155,14 +154,18 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
             <Badge variant="outline" className="ml-2">{wordData.part_of_speech}</Badge>
             <span className="ml-2 text-gray-700">{wordData.meaning}</span>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium whitespace-nowrap">频率：</span>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">{getFrequencyIcon(wordData.frequency)}</span>
-              <span className={`px-2 py-1 rounded text-white text-sm whitespace-nowrap ${getFrequencyColor(wordData.frequency)}`}>
-                {getFrequencyText(wordData.frequency)}
-              </span>
-              <span className="text-sm text-gray-600">{wordData.frequency_note}</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-medium whitespace-nowrap">频率：</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{getFrequencyIcon(wordData.frequency)}</span>
+                <span className={`px-2 py-1 rounded text-white text-sm whitespace-nowrap ${getFrequencyColor(wordData.frequency)}`}>
+                  {getFrequencyText(wordData.frequency)}
+                </span>
+              </div>
+            </div>
+            <div className="text-sm text-gray-600 ml-0">
+              {wordData.frequency_note}
             </div>
           </div>
         </div>
