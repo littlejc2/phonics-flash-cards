@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -48,26 +49,35 @@ const PhoneticTest = () => {
     const vowelData = wordData.vowels[0];
     const targetWord = wordData.word;
     const targetVowel = vowelData.vowel;
-    const similarWords = vowelData.similarWords || [];
+    // Shuffle similar words to ensure variety
+    const similarWords = [...(vowelData.similarWords || [])].sort(() => Math.random() - 0.5);
 
-    // Generate 3 questions with completely different word sets
+    if (similarWords.length === 0) {
+      toast.error('无法生成测试题目', {
+        description: '缺少相似发音的单词'
+      });
+      navigate('/');
+      return;
+    }
+
+    // Generate 3 questions with different correct answers
     const generatedQuestions: TestQuestion[] = [
       {
         id: 1,
         question: `下列哪些单词与 "${targetWord}" 中的 "${targetVowel}" 发音相同？`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'set1'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set1', 0),
         targetVowel
       },
       {
         id: 2,
         question: `选择与 "${targetWord}" 中 "${targetVowel}" 音标相同的单词：`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'set2'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set2', 1),
         targetVowel
       },
       {
         id: 3,
         question: `找出与 "${targetWord}" 元音发音规律相同的单词：`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'set3'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set3', 2),
         targetVowel
       }
     ];
@@ -75,22 +85,20 @@ const PhoneticTest = () => {
     setQuestions(generatedQuestions);
   };
 
-  const generateOptions = (targetWord: string, similarWords: any[], targetVowel: string, wordSet: string) => {
-    // Get correct words from similar words
-    const correctWords = similarWords.slice(0, 1).map(item => {
-      if (typeof item === 'string') {
-        return {
-          word: item,
-          pronunciation: `/${item}/`,
-          isCorrect: true
-        };
-      }
-      return {
-        word: item.word,
-        pronunciation: item.pronunciation,
+  const generateOptions = (targetWord: string, similarWords: any[], targetVowel: string, wordSet: string, correctWordIndex: number) => {
+    // Get a unique correct word from similar words using the index
+    const correctWordItem = similarWords[correctWordIndex % similarWords.length];
+
+    const correctWords = [];
+    if (correctWordItem) {
+      const word = typeof correctWordItem === 'string' ? correctWordItem : correctWordItem.word;
+      const pronunciation = typeof correctWordItem === 'string' ? `/${word}/` : correctWordItem.pronunciation;
+      correctWords.push({
+        word,
+        pronunciation,
         isCorrect: true
-      };
-    });
+      });
+    }
 
     // Define completely different word sets for each question
     const wordSets = {
