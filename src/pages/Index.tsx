@@ -1,15 +1,18 @@
+
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Camera } from 'lucide-react';
+import { ArrowLeft, Camera, Target } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'input' | 'card'>('input');
   const [wordData, setWordData] = useState<any>(null);
   const [isScreenshotting, setIsScreenshotting] = useState(false);
+  const navigate = useNavigate();
 
   const handleWordSubmit = (data: any) => {
     console.log('Generated word data:', data);
@@ -19,6 +22,21 @@ const Index = () => {
 
   const handleBackToInput = () => {
     setCurrentView('input');
+  };
+
+  const handlePhoneticTest = () => {
+    if (!wordData) {
+      toast.error('请先生成单词卡片');
+      return;
+    }
+    
+    // 检查是否有元音数据
+    if (!wordData.vowels || wordData.vowels.length === 0) {
+      toast.error('该单词缺少音标数据，无法进行测试');
+      return;
+    }
+    
+    navigate('/phonetic-test', { state: { wordData } });
   };
 
   const handleScreenshot = async () => {
@@ -38,10 +56,9 @@ const Index = () => {
         description: '请稍等，正在将卡片转换为图片'
       });
 
-      // 使用html2canvas生成截图
       const canvas = await html2canvas(cardElement as HTMLElement, {
         backgroundColor: '#ffffff',
-        scale: 2, // 提高分辨率
+        scale: 2,
         useCORS: true,
         allowTaint: true,
         width: cardElement.scrollWidth,
@@ -50,7 +67,6 @@ const Index = () => {
         scrollY: 0
       });
 
-      // 转换为blob并下载
       canvas.toBlob((blob) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
@@ -106,6 +122,14 @@ const Index = () => {
               
               <div className="flex gap-2">
                 <Button 
+                  onClick={handlePhoneticTest}
+                  variant="secondary"
+                  className="flex items-center gap-2"
+                >
+                  <Target className="w-4 h-4" />
+                  音标测试
+                </Button>
+                <Button 
                   onClick={handleScreenshot}
                   variant="default"
                   className="flex items-center gap-2"
@@ -134,6 +158,9 @@ const Index = () => {
             </p>
             <p className="mb-2">
               📷 <strong>快速截图：</strong>使用html2canvas技术，一键将卡片保存为高质量图片
+            </p>
+            <p className="mb-2">
+              🎯 <strong>音标测试：</strong>智能生成音标练习题，巩固学习效果
             </p>
             <p>
               🎯 基于最新语言学习理论和大数据分析，帮助您更高效地记忆单词
