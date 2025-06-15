@@ -237,23 +237,27 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
           <h3 className="flex items-center gap-2 text-lg font-semibold text-red-800 mb-3">
             📌 实用搭配
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {wordData.collocations.map((collocation, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-md border border-red-100">
-                <div className="flex items-center gap-2 flex-1">
-                  <span className="font-medium text-red-700">• {collocation.phrase}</span>
-                  <button
-                    onClick={() => playPronunciation(collocation.phrase)}
-                    className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs"
-                    title="播放搭配发音"
-                  >
-                    🔊
-                  </button>
+              <div key={index} className="bg-white rounded-md border border-red-100 p-3">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-red-700">• {collocation.phrase}</span>
+                    <button
+                      onClick={() => playPronunciation(collocation.phrase)}
+                      className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs"
+                      title="播放搭配发音"
+                    >
+                      🔊
+                    </button>
+                  </div>
+                  <Badge variant="secondary" className="text-xs w-fit">
+                    {collocation.context}
+                  </Badge>
                 </div>
-                <span className="text-gray-700 flex-1">{collocation.meaning}</span>
-                <Badge variant="secondary" className="text-xs">
-                  {collocation.context}
-                </Badge>
+                <div className="text-gray-700 text-sm">
+                  {collocation.meaning}
+                </div>
               </div>
             ))}
           </div>
