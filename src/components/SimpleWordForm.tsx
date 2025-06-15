@@ -66,7 +66,7 @@ const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
   return (
     <Card className="max-w-2xl mx-auto p-6 bg-white shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-        🤖 AI智能单词卡片生成器
+        🤖 AI单词卡片生成器
       </h2>
       
       <div className="text-center mb-6">
