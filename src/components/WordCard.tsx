@@ -86,15 +86,22 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
   const getSortedSimilarWords = (similarWords: Array<{word: string; pronunciation: string; meaning: string}>, originalWord: string, vowel: string) => {
     if (!similarWords || !Array.isArray(similarWords)) return [];
     
+    // Safely handle undefined vowel
+    const safeVowel = vowel?.toLowerCase() || '';
+    
     // Sort by: 1) words with same letters as original word, 2) alphabetically
     const sorted = [...similarWords].sort((a, b) => {
-      const aHasSameLetters = a.word.toLowerCase().includes(vowel.toLowerCase());
-      const bHasSameLetters = b.word.toLowerCase().includes(vowel.toLowerCase());
+      // Safely handle undefined word properties
+      const aWord = a.word?.toLowerCase() || '';
+      const bWord = b.word?.toLowerCase() || '';
+      
+      const aHasSameLetters = safeVowel && aWord.includes(safeVowel);
+      const bHasSameLetters = safeVowel && bWord.includes(safeVowel);
       
       if (aHasSameLetters && !bHasSameLetters) return -1;
       if (!aHasSameLetters && bHasSameLetters) return 1;
       
-      return a.word.localeCompare(b.word);
+      return aWord.localeCompare(bWord);
     });
     
     // Limit to 2-3 words
