@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
@@ -155,7 +156,7 @@ const Index = () => {
         <footer className="mt-12 text-center text-sm text-gray-500">
           <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 max-w-2xl mx-auto">
             <p className="mb-2">
-              🤖 <strong>AI智能生成：</strong>只需输入单词，AI自动分析生成专业学习卡片
+              🤖 <strong>AI生成：</strong>只需输入单词，AI自动分析生成专业学习卡片
             </p>
             <p className="mb-2">
               📷 <strong>快速截图：</strong>使用html2canvas技术，一键将卡片保存为高质量图片
@@ -171,3 +172,4 @@ const Index = () => {
 };
 
 export default Index;
+
