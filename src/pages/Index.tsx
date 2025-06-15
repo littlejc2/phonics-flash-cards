@@ -100,13 +100,13 @@ const Index = () => {
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 leading-tight">
             🤖 AI智能单词学习卡片
           </h1>
-          <p className="text-lg text-gray-600 mb-4">
+          <p className="text-base md:text-lg text-gray-600 mb-4">
             一键输入 • AI智能分析 • 专业学习卡片
           </p>
-          <div className="flex flex-wrap justify-center gap-2 text-sm text-gray-500">
+          <div className="flex flex-wrap justify-center gap-2 text-xs sm:text-sm text-gray-500">
             <span>🤖 AI自动生成</span>
             <span>✅ 词根词缀分析</span>
             <span>✅ 同音词记忆</span>
