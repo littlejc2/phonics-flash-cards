@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { playPronunciation } from '@/lib/speech';
 
@@ -175,8 +176,10 @@ const VowelAnalysisSection: React.FC<VowelAnalysisSectionProps> = ({ word, vowel
                       <div className="text-xs sm:text-sm text-blue-600 font-mono mb-1 break-all">
                         [{wordObj.pronunciation}]
                       </div>
-                      <div className="text-xs sm:text-sm text-gray-600 break-words">
-                        {wordObj.meaning}
+                      <div className="text-xs sm:text-sm">
+                        <span className="inline-block bg-yellow-100 text-orange-700 px-2 py-1 rounded font-semibold">
+                          {wordObj.meaning}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -195,3 +198,4 @@ const VowelAnalysisSection: React.FC<VowelAnalysisSectionProps> = ({ word, vowel
 };
 
 export default VowelAnalysisSection;
+
