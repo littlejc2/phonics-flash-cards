@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
@@ -103,17 +102,6 @@ const Index = () => {
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 leading-tight">
             🤖 AI智能单词学习卡片
           </h1>
-          <p className="text-base md:text-lg text-gray-600 mb-4">
-            一键输入 • AI智能分析 • 专业学习卡片
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 text-xs sm:text-sm text-gray-500">
-            <span>🤖 AI自动生成</span>
-            <span>✅ 词根词缀分析</span>
-            <span>✅ 同音词记忆</span>
-            <span>✅ 实用搭配</span>
-            <span>✅ 分频率标注</span>
-            <span>✅ 便于截图分享</span>
-          </div>
         </div>
 
         {/* Main Content */}
