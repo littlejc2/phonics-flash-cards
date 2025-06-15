@@ -1,15 +1,16 @@
-
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Share2, History } from 'lucide-react';
+import { ArrowLeft, Download, Share2, History, Camera } from 'lucide-react';
 import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'input' | 'card'>('input');
   const [wordData, setWordData] = useState<any>(null);
   const [isConverting, setIsConverting] = useState(false);
+  const [isScreenshotting, setIsScreenshotting] = useState(false);
 
   const handleWordSubmit = (data: any) => {
     console.log('Generated word data:', data);
@@ -19,6 +20,63 @@ const Index = () => {
 
   const handleBackToInput = () => {
     setCurrentView('input');
+  };
+
+  const handleScreenshot = async () => {
+    if (!wordData) return;
+
+    setIsScreenshotting(true);
+    
+    try {
+      // 获取卡片元素
+      const cardElement = document.querySelector('.word-card-container');
+      
+      if (!cardElement) {
+        throw new Error('卡片元素未找到');
+      }
+
+      toast.info('正在生成截图...', {
+        description: '请稍等，正在将卡片转换为图片'
+      });
+
+      // 使用html2canvas生成截图
+      const canvas = await html2canvas(cardElement as HTMLElement, {
+        backgroundColor: '#ffffff',
+        scale: 2, // 提高分辨率
+        useCORS: true,
+        allowTaint: true,
+        width: cardElement.scrollWidth,
+        height: cardElement.scrollHeight,
+        scrollX: 0,
+        scrollY: 0
+      });
+
+      // 转换为blob并下载
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${wordData.word}-学习卡片.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          
+          toast.success('截图保存成功！', {
+            description: `${wordData.word} 学习卡片已保存为 PNG 图片`
+          });
+        }
+      }, 'image/png', 1.0);
+
+    } catch (error) {
+      console.error('Error taking screenshot:', error);
+      toast.error('截图失败', {
+        description: '请尝试刷新页面后重试，或使用浏览器的截图功能'
+      });
+    } finally {
+      setIsScreenshotting(false);
+    }
   };
 
   const handleDownload = async () => {
@@ -219,13 +277,22 @@ const Index = () => {
               
               <div className="flex gap-2">
                 <Button 
+                  onClick={handleScreenshot}
+                  variant="default"
+                  className="flex items-center gap-2"
+                  disabled={isScreenshotting}
+                >
+                  <Camera className="w-4 h-4" />
+                  {isScreenshotting ? '截图中...' : '快速截图'}
+                </Button>
+                <Button 
                   onClick={handleDownload}
                   variant="outline"
                   className="flex items-center gap-2"
                   disabled={isConverting}
                 >
                   <Download className="w-4 h-4" />
-                  {isConverting ? '转换中...' : '保存为图片'}
+                  {isConverting ? '转换中...' : 'CloudConvert'}
                 </Button>
                 <Button 
                   onClick={handleShare}
@@ -254,7 +321,10 @@ const Index = () => {
               🤖 <strong>AI智能生成：</strong>只需输入单词，AI自动分析生成专业学习卡片
             </p>
             <p className="mb-2">
-              📷 <strong>CloudConvert 保存：</strong>一键将卡片转换为高质量 PNG 图片
+              📷 <strong>快速截图：</strong>使用html2canvas技术，一键将卡片保存为高质量图片
+            </p>
+            <p className="mb-2">
+              ☁️ <strong>CloudConvert 保存：</strong>备用方案，使用云端服务转换图片格式
             </p>
             <p>
               🎯 基于最新语言学习理论和大数据分析，帮助您更高效地记忆单词
