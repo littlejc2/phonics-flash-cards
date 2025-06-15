@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -72,6 +73,85 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     if (!word || !vowel) return word || '';
     const regex = new RegExp(`(${vowel})`, 'gi');
     return word.replace(regex, `<span class="bg-yellow-300 text-red-600 font-bold underline">$1</span>`);
+  };
+
+  // Function to get simple meaning for common words
+  const getSimpleMeaning = (word: string) => {
+    const simpleMeanings: { [key: string]: string } = {
+      'word': '单词',
+      'work': '工作',
+      'bird': '鸟',
+      'learn': '学习',
+      'turn': '转动',
+      'burn': '燃烧',
+      'hurt': '受伤',
+      'world': '世界',
+      'first': '第一',
+      'church': '教堂',
+      'earth': '地球',
+      'third': '第三',
+      'heard': '听到',
+      'search': '搜索',
+      'person': '人',
+      'certain': '确定的',
+      'perfect': '完美的',
+      'purpose': '目的',
+      'surface': '表面',
+      'circle': '圆圈',
+      'purple': '紫色',
+      'service': '服务',
+      'nervous': '紧张的',
+      'herself': '她自己',
+      'concern': '关心',
+      'deserve': '值得',
+      'reserve': '保留',
+      'observe': '观察',
+      'preserve': '保护',
+      'confirm': '确认',
+      'western': '西方的',
+      'northern': '北方的',
+      'southern': '南方的',
+      'eastern': '东方的',
+      'winter': '冬天',
+      'summer': '夏天',
+      'water': '水',
+      'better': '更好的',
+      'letter': '信件',
+      'center': '中心',
+      'matter': '事情',
+      'sister': '姐妹',
+      'brother': '兄弟',
+      'mother': '母亲',
+      'father': '父亲',
+      'teacher': '老师',
+      'worker': '工人',
+      'player': '玩家',
+      'winner': '获胜者',
+      'dinner': '晚餐',
+      'finger': '手指',
+      'number': '数字',
+      'member': '成员',
+      'answer': '答案',
+      'flower': '花',
+      'power': '力量',
+      'tower': '塔',
+      'shower': '淋浴',
+      'hour': '小时',
+      'sour': '酸的',
+      'four': '四',
+      'door': '门',
+      'floor': '地板',
+      'poor': '贫穷的',
+      'more': '更多',
+      'store': '商店',
+      'before': '之前',
+      'explore': '探索',
+      'ignore': '忽视',
+      'score': '分数',
+      'shore': '海岸'
+    };
+    
+    return simpleMeanings[word.toLowerCase()] || '常用词';
   };
 
   const playPronunciation = (text: string) => {
@@ -151,7 +231,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
         return {
           word: item,
           pronunciation: `/${item}/`, // Default pronunciation
-          meaning: '词义待补充'
+          meaning: getSimpleMeaning(item) // Use the simple meaning function
         };
       }
       return item;
@@ -338,3 +418,4 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
 };
 
 export default WordCard;
+
