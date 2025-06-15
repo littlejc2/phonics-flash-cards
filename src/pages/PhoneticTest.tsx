@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -51,24 +50,24 @@ const PhoneticTest = () => {
     const targetVowel = vowelData.vowel;
     const similarWords = vowelData.similarWords || [];
 
-    // Generate 3 questions
+    // Generate 3 questions with different word sets
     const generatedQuestions: TestQuestion[] = [
       {
         id: 1,
         question: `下列哪些单词与 "${targetWord}" 中的 "${targetVowel}" 发音相同？`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'same'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set1'),
         targetVowel
       },
       {
         id: 2,
         question: `选择与 "${targetWord}" 中 "${targetVowel}" 音标相同的单词：`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'phonetic'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set2'),
         targetVowel
       },
       {
         id: 3,
         question: `找出与 "${targetWord}" 元音发音规律相同的单词：`,
-        options: generateOptions(targetWord, similarWords, targetVowel, 'pattern'),
+        options: generateOptions(targetWord, similarWords, targetVowel, 'set3'),
         targetVowel
       }
     ];
@@ -76,7 +75,7 @@ const PhoneticTest = () => {
     setQuestions(generatedQuestions);
   };
 
-  const generateOptions = (targetWord: string, similarWords: any[], targetVowel: string, type: string) => {
+  const generateOptions = (targetWord: string, similarWords: any[], targetVowel: string, wordSet: string) => {
     // Get correct words from similar words
     const correctWords = similarWords.slice(0, 2).map(item => {
       if (typeof item === 'string') {
@@ -93,15 +92,33 @@ const PhoneticTest = () => {
       };
     });
 
-    // Add some incorrect options
-    const incorrectWords = [
-      { word: 'cat', pronunciation: '/kæt/', isCorrect: false },
-      { word: 'dog', pronunciation: '/dɔg/', isCorrect: false },
-      { word: 'tree', pronunciation: '/tri/', isCorrect: false },
-      { word: 'book', pronunciation: '/bʊk/', isCorrect: false }
-    ].filter(item => !correctWords.some(correct => correct.word === item.word));
+    // Define different word sets for variety
+    const wordSets = {
+      set1: [
+        { word: 'apple', pronunciation: '/ˈæpəl/', isCorrect: false },
+        { word: 'house', pronunciation: '/haʊs/', isCorrect: false },
+        { word: 'blue', pronunciation: '/bluː/', isCorrect: false },
+        { word: 'chair', pronunciation: '/tʃer/', isCorrect: false }
+      ],
+      set2: [
+        { word: 'orange', pronunciation: '/ˈɔːrɪndʒ/', isCorrect: false },
+        { word: 'table', pronunciation: '/ˈteɪbəl/', isCorrect: false },
+        { word: 'green', pronunciation: '/ɡriːn/', isCorrect: false },
+        { word: 'phone', pronunciation: '/foʊn/', isCorrect: false }
+      ],
+      set3: [
+        { word: 'water', pronunciation: '/ˈwɔːtər/', isCorrect: false },
+        { word: 'school', pronunciation: '/skuːl/', isCorrect: false },
+        { word: 'happy', pronunciation: '/ˈhæpi/', isCorrect: false },
+        { word: 'window', pronunciation: '/ˈwɪndoʊ/', isCorrect: false }
+      ]
+    };
 
-    // Combine and shuffle
+    // Select incorrect words from the specified set
+    const incorrectWords = wordSets[wordSet as keyof typeof wordSets]
+      .filter(item => !correctWords.some(correct => correct.word === item.word));
+
+    // Combine and shuffle - take 2 incorrect words to make 4 total options
     const allOptions = [...correctWords, ...incorrectWords.slice(0, 2)];
     return allOptions.sort(() => Math.random() - 0.5);
   };
