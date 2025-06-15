@@ -92,12 +92,22 @@ serve(async (req) => {
           "meaning": "搭配含义",
           "context": "使用语境"
         }
+      ],
+      "exampleSentences": [
+        {
+          "sentence": "包含该单词的完整英文例句",
+          "translation": "该例句的中文翻译"
+        },
+        {
+          "sentence": "第二个例句",
+          "translation": "第二个例句的翻译"
+        }
       ]
     }
     
     注意：
     1. similarWords数组中每个单词都要有word和pronunciation两个字段
-    2. 同音词只需要2-3个即可，不要太多
+    2. 同音词、常用搭配和例句各提供2-3个即可，不要太多
     3. 确保所有单词的pronunciation都是准确的音标格式
     
     请确保返回的是有效的JSON格式，不要包含其他文字说明。`;
@@ -154,7 +164,8 @@ serve(async (req) => {
         frequency_note: wordData.frequencyNote,
         vowels: wordData.vowels,
         etymology: wordData.etymology,
-        collocations: wordData.collocations
+        collocations: wordData.collocations,
+        example_sentences: wordData.exampleSentences
       }])
       .select()
       .single();
