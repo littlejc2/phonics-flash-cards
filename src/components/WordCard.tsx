@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -96,12 +97,21 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     
     utterance.onerror = (event) => {
       console.error('SpeechSynthesisUtterance.onerror:', event);
+      
+      // 'interrupted' and 'canceled' are often not true errors on mobile.
+      // They can happen when we intentionally call `synth.cancel()`.
+      // We will ignore them to prevent false error messages.
+      if (event.error === 'interrupted' || event.error === 'canceled') {
+        console.warn(`SpeechSynthesis event "${event.error}" caught and ignored.`);
+        return;
+      }
+
       let errorMessage = '朗读时发生未知错误。';
       // The 'error' property provides a string code for the error.
       if (event.error) {
           switch(event.error) {
               case 'not-allowed':
-                  errorMessage = '浏览器阻止了语音播放。请在网站设置中允许音频播放。请在网站设置中允许音频播放。';
+                  errorMessage = '浏览器阻止了语音播放。请在网站设置中允许音频播放。';
                   break;
               case 'synthesis-unavailable':
                   errorMessage = '您设备上的语音合成服务当前不可用。';
