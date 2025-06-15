@@ -263,6 +263,9 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
   console.log('Vowels data:', wordData.vowels);
   console.log('Example sentences data:', wordData.example_sentences);
 
+  // 修正字段命名兼容（核心更新）
+  const exampleSentencesData = wordData.example_sentences || wordData.exampleSentences || [];
+
   return (
     <Card className="w-full max-w-2xl mx-auto p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
       {/* Header */}
@@ -413,15 +416,15 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
         </>
       )}
 
-      {/* Example Sentences */}
-      {wordData.example_sentences && wordData.example_sentences.length > 0 && (
+      {/* Example Sentences - 修正渲染字段 */}
+      {exampleSentencesData && exampleSentencesData.length > 0 && (
         <>
           <div className="bg-purple-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
             <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-purple-800 mb-3">
               <Headphones className="w-5 h-5" /> 精选例句
             </h3>
             <div className="space-y-3">
-              {wordData.example_sentences.map((example, index) => (
+              {exampleSentencesData.map((example: any, index: number) => (
                 <div key={index} className="bg-white rounded-md border border-purple-100 p-3">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <p className="font-medium text-gray-800 text-sm sm:text-base break-words flex-1">
