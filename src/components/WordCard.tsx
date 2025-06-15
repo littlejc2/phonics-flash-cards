@@ -131,11 +131,11 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                         <span 
                           className="px-2 py-1 bg-yellow-200 rounded text-sm font-medium"
                           dangerouslySetInnerHTML={{ 
-                            __html: highlightVowels(wordItem.word || wordItem, vowelData.vowel) 
+                            __html: highlightVowels(wordItem.word, vowelData.vowel) 
                           }}
                         />
                         <span className="text-xs text-gray-600 mt-1">
-                          [{wordItem.pronunciation || ''}]
+                          [{wordItem.pronunciation}]
                         </span>
                       </div>
                     ))}
