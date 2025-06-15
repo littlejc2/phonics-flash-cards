@@ -155,13 +155,15 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
             <Badge variant="outline" className="ml-2">{wordData.part_of_speech}</Badge>
             <span className="ml-2 text-gray-700">{wordData.meaning}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">频率：</span>
-            <span className="text-lg">{getFrequencyIcon(wordData.frequency)}</span>
-            <span className={`px-2 py-1 rounded text-white text-sm ${getFrequencyColor(wordData.frequency)}`}>
-              {getFrequencyText(wordData.frequency)}
-            </span>
-            <span className="text-sm text-gray-600">{wordData.frequency_note}</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-medium whitespace-nowrap">频率：</span>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{getFrequencyIcon(wordData.frequency)}</span>
+              <span className={`px-2 py-1 rounded text-white text-sm whitespace-nowrap ${getFrequencyColor(wordData.frequency)}`}>
+                {getFrequencyText(wordData.frequency)}
+              </span>
+              <span className="text-sm text-gray-600">{wordData.frequency_note}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -240,18 +242,18 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
           <div className="space-y-3">
             {wordData.collocations.map((collocation, index) => (
               <div key={index} className="bg-white rounded-md border border-red-100 p-3">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 flex-1">
                     <span className="font-medium text-red-700">• {collocation.phrase}</span>
                     <button
                       onClick={() => playPronunciation(collocation.phrase)}
-                      className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs"
+                      className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs flex-shrink-0"
                       title="播放搭配发音"
                     >
                       🔊
                     </button>
                   </div>
-                  <Badge variant="secondary" className="text-xs w-fit">
+                  <Badge variant="secondary" className="text-xs flex-shrink-0">
                     {collocation.context}
                   </Badge>
                 </div>
