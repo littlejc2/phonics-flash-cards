@@ -1,15 +1,15 @@
+
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Share2, History, Camera } from 'lucide-react';
+import { ArrowLeft, Share2, History, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'input' | 'card'>('input');
   const [wordData, setWordData] = useState<any>(null);
-  const [isConverting, setIsConverting] = useState(false);
   const [isScreenshotting, setIsScreenshotting] = useState(false);
 
   const handleWordSubmit = (data: any) => {
@@ -79,149 +79,6 @@ const Index = () => {
     }
   };
 
-  const handleDownload = async () => {
-    if (!wordData) return;
-
-    setIsConverting(true);
-    
-    try {
-      // Get the card element
-      const cardElement = document.querySelector('.word-card-container');
-      if (!cardElement) {
-        throw new Error('卡片元素未找到');
-      }
-
-      // Convert the card to HTML string
-      const cardHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${wordData.word} - AI智能单词学习卡片</title>
-          <script src="https://cdn.tailwindcss.com"></script>
-          <style>
-            body { 
-              font-family: system-ui, -apple-system, sans-serif; 
-              background: linear-gradient(135deg, #dbeafe 0%, #faf5ff 50%, #fce7f3 100%);
-              padding: 20px;
-              margin: 0;
-            }
-            .highlight-vowel {
-              background-color: #fef3c7;
-              color: #dc2626;
-              font-weight: bold;
-              text-decoration: underline;
-            }
-          </style>
-        </head>
-        <body>
-          ${cardElement.outerHTML}
-        </body>
-        </html>
-      `;
-
-      // Use CloudConvert API to convert HTML to PNG
-      const response = await fetch('https://api.cloudconvert.com/v2/jobs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_CLOUDCONVERT_API_KEY' // 用户需要设置API密钥
-        },
-        body: JSON.stringify({
-          tasks: {
-            'import-html': {
-              operation: 'import/base64',
-              file: btoa(cardHTML),
-              filename: `${wordData.word}-card.html`
-            },
-            'convert-to-png': {
-              operation: 'convert',
-              input: 'import-html',
-              output_format: 'png',
-              engine: 'chrome',
-              engine_version: '91',
-              zoom: 2,
-              width: 1200,
-              height: 1600,
-              wait_time: 2
-            },
-            'export-png': {
-              operation: 'export/url',
-              input: 'convert-to-png'
-            }
-          }
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('CloudConvert API 请求失败');
-      }
-
-      const job = await response.json();
-      
-      toast.success('转换中...', {
-        description: '正在使用 CloudConvert 将卡片转换为图片格式'
-      });
-
-      // Poll for job completion
-      const jobId = job.data.id;
-      let attempts = 0;
-      const maxAttempts = 30;
-
-      const pollJob = async () => {
-        const statusResponse = await fetch(`https://api.cloudconvert.com/v2/jobs/${jobId}`, {
-          headers: {
-            'Authorization': 'Bearer YOUR_CLOUDCONVERT_API_KEY'
-          }
-        });
-
-        const jobStatus = await statusResponse.json();
-        
-        if (jobStatus.data.status === 'finished') {
-          const exportTask = jobStatus.data.tasks.find((task: any) => task.name === 'export-png');
-          if (exportTask && exportTask.result && exportTask.result.files[0]) {
-            const downloadUrl = exportTask.result.files[0].url;
-            
-            // Download the file
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = `${wordData.word}-学习卡片.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            toast.success('卡片保存成功！', {
-              description: `${wordData.word} 学习卡片已保存为 PNG 图片`
-            });
-          }
-        } else if (jobStatus.data.status === 'error') {
-          throw new Error('转换过程中出现错误');
-        } else if (attempts < maxAttempts) {
-          attempts++;
-          setTimeout(pollJob, 2000);
-        } else {
-          throw new Error('转换超时，请重试');
-        }
-      };
-
-      setTimeout(pollJob, 2000);
-
-    } catch (error) {
-      console.error('Error converting card:', error);
-      toast.error('保存失败', {
-        description: '请检查 CloudConvert API 密钥设置或网络连接'
-      });
-      
-      // Fallback to screenshot instruction
-      toast.info('备用方案', {
-        description: '您可以使用浏览器的截图功能或手机截屏来保存卡片'
-      });
-    } finally {
-      setIsConverting(false);
-    }
-  };
-
   const handleShare = () => {
     if (navigator.share && wordData) {
       navigator.share({
@@ -283,16 +140,7 @@ const Index = () => {
                   disabled={isScreenshotting}
                 >
                   <Camera className="w-4 h-4" />
-                  {isScreenshotting ? '截图中...' : '快速截图'}
-                </Button>
-                <Button 
-                  onClick={handleDownload}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                  disabled={isConverting}
-                >
-                  <Download className="w-4 h-4" />
-                  {isConverting ? '转换中...' : 'CloudConvert'}
+                  {isScreenshotting ? '截图中...' : '保存图片'}
                 </Button>
                 <Button 
                   onClick={handleShare}
@@ -322,9 +170,6 @@ const Index = () => {
             </p>
             <p className="mb-2">
               📷 <strong>快速截图：</strong>使用html2canvas技术，一键将卡片保存为高质量图片
-            </p>
-            <p className="mb-2">
-              ☁️ <strong>CloudConvert 保存：</strong>备用方案，使用云端服务转换图片格式
             </p>
             <p>
               🎯 基于最新语言学习理论和大数据分析，帮助您更高效地记忆单词
