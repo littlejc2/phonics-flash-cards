@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -127,59 +128,63 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
   console.log('Vowels data:', wordData.vowels);
 
   return (
-    <Card className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
+    <Card className="w-full max-w-2xl mx-auto p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
       {/* Header */}
-      <div className="text-center mb-6">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">{wordData.word}</h1>
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-lg text-blue-600 font-mono">[{wordData.pronunciation}]</span>
-          <button
-            onClick={() => playPronunciation(wordData.word)}
-            className="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors text-blue-700 text-sm"
-          >
-            🔊 发音
-          </button>
-          <span className="text-sm text-gray-500">🤖 AI生成</span>
+      <div className="text-center mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-2 break-words">{wordData.word}</h1>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-2">
+          <span className="text-base sm:text-lg text-blue-600 font-mono break-all">[{wordData.pronunciation}]</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => playPronunciation(wordData.word)}
+              className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors text-blue-700 text-xs sm:text-sm whitespace-nowrap"
+            >
+              🔊 发音
+            </button>
+            <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">🤖 AI生成</span>
+          </div>
         </div>
       </div>
 
       {/* Basic Info */}
-      <div className="bg-green-50 rounded-lg p-4 mb-4">
-        <h3 className="flex items-center gap-2 text-lg font-semibold text-green-800 mb-2">
+      <div className="bg-green-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+        <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-green-800 mb-2">
           📖 基本信息
         </h3>
         <div className="space-y-2">
-          <div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
             <span className="font-medium">词性：</span>
-            <Badge variant="outline" className="ml-2">{wordData.part_of_speech}</Badge>
-            <span className="ml-2 text-gray-700">{wordData.meaning}</span>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">{wordData.part_of_speech}</Badge>
+              <span className="text-gray-700 text-sm break-words">{wordData.meaning}</span>
+            </div>
           </div>
           <div className="space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
               <span className="font-medium whitespace-nowrap">频率：</span>
               <div className="flex items-center gap-2">
                 <span className="text-lg">{getFrequencyIcon(wordData.frequency)}</span>
-                <span className={`px-2 py-1 rounded text-white text-sm whitespace-nowrap ${getFrequencyColor(wordData.frequency)}`}>
+                <span className={`px-2 py-1 rounded text-white text-xs sm:text-sm whitespace-nowrap ${getFrequencyColor(wordData.frequency)}`}>
                   {getFrequencyText(wordData.frequency)}
                 </span>
               </div>
             </div>
-            <div className="text-sm text-gray-600 ml-0">
+            <div className="text-xs sm:text-sm text-gray-600">
               {wordData.frequency_note}
             </div>
           </div>
         </div>
       </div>
 
-      <Separator className="my-4" />
+      <Separator className="my-3 sm:my-4" />
 
       {/* Vowel Analysis */}
       {wordData.vowels && wordData.vowels.length > 0 && (
         <>
-          <div className="bg-yellow-50 rounded-lg p-4 mb-4">
-            <h3 className="text-lg font-semibold text-yellow-800 mb-3">🎵 元音音标同音词</h3>
+          <div className="bg-yellow-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+            <h3 className="text-base sm:text-lg font-semibold text-yellow-800 mb-3">🎵 元音音标同音词</h3>
             <div className="space-y-3">
-              <div className="font-bold text-xl mb-2">
+              <div className="font-bold text-lg sm:text-xl mb-2">
                 <span 
                   dangerouslySetInnerHTML={{ 
                     __html: highlightVowels(wordData.word, wordData.vowels[0]?.vowel || '') 
@@ -192,38 +197,38 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                 
                 return (
                   <div key={index} className="space-y-2">
-                    <div className="font-semibold text-orange-700">
+                    <div className="font-semibold text-orange-700 text-sm sm:text-base break-words">
                       #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
                     </div>
                     {sortedSimilarWords.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 gap-3">
                         {sortedSimilarWords.map((wordObj, wordIndex) => (
                           <div key={wordIndex} className="bg-white rounded-lg p-3 shadow-sm border">
                             <div className="flex items-center justify-between mb-2">
                               <span 
-                                className="text-lg font-bold text-gray-800"
+                                className="text-base sm:text-lg font-bold text-gray-800 break-words flex-1"
                                 dangerouslySetInnerHTML={{ 
                                   __html: highlightVowels(wordObj.word, vowelData.vowel) 
                                 }}
                               />
                               <button
                                 onClick={() => playPronunciation(wordObj.word)}
-                                className="flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 rounded transition-colors text-blue-600 text-xs"
+                                className="flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 rounded transition-colors text-blue-600 text-xs ml-2 flex-shrink-0"
                               >
                                 🔊
                               </button>
                             </div>
-                            <div className="text-sm text-blue-600 font-mono mb-1">
+                            <div className="text-xs sm:text-sm text-blue-600 font-mono mb-1 break-all">
                               [{wordObj.pronunciation}]
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-xs sm:text-sm text-gray-600 break-words">
                               {wordObj.meaning}
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-500 italic">
+                      <div className="text-xs sm:text-sm text-gray-500 italic">
                         暂无同音词数据
                       </div>
                     )}
@@ -232,22 +237,22 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
               })}
             </div>
           </div>
-          <Separator className="my-4" />
+          <Separator className="my-3 sm:my-4" />
         </>
       )}
 
       {/* Practical Collocations */}
       {wordData.collocations && wordData.collocations.length > 0 && (
-        <div className="bg-red-50 rounded-lg p-4">
-          <h3 className="flex items-center gap-2 text-lg font-semibold text-red-800 mb-3">
+        <div className="bg-red-50 rounded-lg p-3 sm:p-4">
+          <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-red-800 mb-3">
             📌 实用搭配
           </h3>
           <div className="space-y-3">
             {wordData.collocations.map((collocation, index) => (
               <div key={index} className="bg-white rounded-md border border-red-100 p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="font-medium text-red-700">• {collocation.phrase}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="font-medium text-red-700 text-sm break-words">• {collocation.phrase}</span>
                     <button
                       onClick={() => playPronunciation(collocation.phrase)}
                       className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs flex-shrink-0"
@@ -256,11 +261,11 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                       🔊
                     </button>
                   </div>
-                  <Badge variant="secondary" className="text-xs flex-shrink-0">
+                  <Badge variant="secondary" className="text-xs flex-shrink-0 self-start sm:self-center">
                     {collocation.context}
                   </Badge>
                 </div>
-                <div className="text-gray-700 text-sm">
+                <div className="text-gray-700 text-xs sm:text-sm break-words">
                   {collocation.meaning}
                 </div>
               </div>
@@ -270,10 +275,10 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
       )}
 
       {/* Footer */}
-      <div className="mt-6 text-center text-xs text-gray-500">
-        <div className="bg-gray-100 p-2 rounded-md">
-          <p>🔴 = 教育部考纲核心词汇前3000 | 🔵 = 3000-5000 | ⚪️ = 5000-8000</p>
-          <p className="mt-1">🤖 本卡片由AI智能生成，基于语言学习最佳实践</p>
+      <div className="mt-4 sm:mt-6 text-center text-xs text-gray-500">
+        <div className="bg-gray-100 p-2 sm:p-3 rounded-md">
+          <p className="break-words">🔴 = 教育部考纲核心词汇前3000 | 🔵 = 3000-5000 | ⚪️ = 5000-8000</p>
+          <p className="mt-1 break-words">🤖 本卡片由AI生成，基于语言学习最佳实践</p>
         </div>
       </div>
     </Card>
