@@ -259,7 +259,7 @@ const WordInputForm: React.FC<WordInputFormProps> = ({ onSubmit }) => {
                         value={word}
                         onChange={(e) => updateSimilarWord(vowelIndex, wordIndex, e.target.value)}
                         placeholder="同音词"
-                        size="sm"
+                        className="text-sm"
                       />
                       {vowel.similarWords.length > 1 && (
                         <Button
