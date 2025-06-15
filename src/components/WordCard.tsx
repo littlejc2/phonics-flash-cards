@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 
 interface WordData {
   id?: string;
@@ -74,16 +74,58 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
   };
 
   const playPronunciation = (text: string) => {
-    if ('speechSynthesis' in window) {
-      // 停止当前播放的语音
-      speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.8;
-      utterance.volume = 1.0;
-      speechSynthesis.speak(utterance);
+    if (!('speechSynthesis' in window)) {
+      toast.error('抱歉，您的浏览器不支持语音朗读功能。');
+      return;
     }
+    
+    const synth = window.speechSynthesis;
+
+    // A hack to "wake up" the speech synthesis engine on some mobile browsers
+    if (synth.paused) {
+      synth.resume();
+    }
+    
+    // Stop any currently playing speech to avoid overlaps
+    synth.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.8;
+    utterance.volume = 1.0;
+    
+    utterance.onerror = (event) => {
+      console.error('SpeechSynthesisUtterance.onerror:', event);
+      let errorMessage = '朗读时发生未知错误。';
+      // The 'error' property provides a string code for the error.
+      if (event.error) {
+          switch(event.error) {
+              case 'not-allowed':
+                  errorMessage = '浏览器阻止了语音播放。请在网站设置中允许音频播放。请在网站设置中允许音频播放。';
+                  break;
+              case 'synthesis-unavailable':
+                  errorMessage = '您设备上的语音合成服务当前不可用。';
+                  break;
+              case 'synthesis-failed':
+                  errorMessage = '语音合成失败，请稍后重试。';
+                  break;
+              case 'audio-busy':
+                  errorMessage = '音频设备正忙，请关闭其他音频应用后再试。';
+                  break;
+              case 'network':
+                  errorMessage = '需要网络连接来加载语音，请检查您的网络。';
+                  break;
+              default:
+                  errorMessage = `朗读失败，错误代码: ${event.error}`;
+          }
+      }
+      toast.error('语音朗读失败', {
+        description: errorMessage,
+        duration: 5000,
+      });
+    };
+
+    synth.speak(utterance);
   };
 
   // Sort and limit similar words - handle both string and object formats
