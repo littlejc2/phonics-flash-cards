@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,10 +14,7 @@ interface WordData {
   vowels: Array<{
     vowel: string;
     sound: string;
-    similarWords: Array<{
-      word: string;
-      pronunciation: string;
-    }>;
+    similarWords: string[];
   }>;
   etymology: {
     root: string;
@@ -67,7 +63,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
   };
 
   const highlightVowels = (word: string, vowel: string) => {
-    if (!vowel) return word;
+    if (!word || !vowel) return word || '';
     const regex = new RegExp(`(${vowel})`, 'gi');
     return word.replace(regex, `<span class="bg-yellow-300 text-red-600 font-bold underline">$1</span>`);
   };
@@ -126,16 +122,16 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                     #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {vowelData.similarWords?.map((wordItem, wordIndex) => (
+                    {wordData.similarWords?.map((word, wordIndex) => (
                       <div key={wordIndex} className="flex flex-col items-center">
                         <span 
                           className="px-2 py-1 bg-yellow-200 rounded text-sm font-medium"
                           dangerouslySetInnerHTML={{ 
-                            __html: highlightVowels(wordItem.word, vowelData.vowel) 
+                            __html: highlightVowels(word, vowelData.vowel) 
                           }}
                         />
                         <span className="text-xs text-gray-600 mt-1">
-                          [{wordItem.pronunciation}]
+                          [/{vowelData.sound}/]
                         </span>
                       </div>
                     ))}
