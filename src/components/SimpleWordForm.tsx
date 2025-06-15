@@ -76,7 +76,7 @@ const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
         </p>
         <div className="flex flex-wrap justify-center gap-2 text-sm text-blue-600">
           <span>✨ 音标发音</span>
-          <span>✨ 词根词缀</span>
+          <span>词根词缀</span>
           <span>✨ 同音词记忆</span>
           <span>✨ 实用搭配</span>
           <span>✨ 频率标注</span>
