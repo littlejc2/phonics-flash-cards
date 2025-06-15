@@ -261,6 +261,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
 
   console.log('WordCard data:', wordData);
   console.log('Vowels data:', wordData.vowels);
+  console.log('Example sentences data:', wordData.example_sentences);
 
   return (
     <Card className="w-full max-w-2xl mx-auto p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
@@ -378,65 +379,71 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
 
       {/* Practical Collocations */}
       {wordData.collocations && wordData.collocations.length > 0 && (
-        <div className="bg-red-50 rounded-lg p-3 sm:p-4">
-          <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-red-800 mb-3">
-            📌 实用搭配
-          </h3>
-          <div className="space-y-3">
-            {wordData.collocations.map((collocation, index) => (
-              <div key={index} className="bg-white rounded-md border border-red-100 p-3">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="font-medium text-red-700 text-sm break-words">• {collocation.phrase}</span>
-                    <button
-                      onClick={() => playPronunciation(collocation.phrase)}
-                      className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs flex-shrink-0"
-                      title="播放搭配发音"
-                    >
-                      🔊
-                    </button>
+        <>
+          <div className="bg-red-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+            <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-red-800 mb-3">
+              📌 实用搭配
+            </h3>
+            <div className="space-y-3">
+              {wordData.collocations.map((collocation, index) => (
+                <div key={index} className="bg-white rounded-md border border-red-100 p-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="font-medium text-red-700 text-sm break-words">• {collocation.phrase}</span>
+                      <button
+                        onClick={() => playPronunciation(collocation.phrase)}
+                        className="flex items-center gap-1 px-2 py-1 bg-red-50 hover:bg-red-100 rounded transition-colors text-red-600 text-xs flex-shrink-0"
+                        title="播放搭配发音"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                    <Badge variant="secondary" className="text-xs flex-shrink-0 self-start sm:self-center">
+                      {collocation.context}
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-xs flex-shrink-0 self-start sm:self-center">
-                    {collocation.context}
-                  </Badge>
+                  <div className="text-gray-700 text-xs sm:text-sm break-words">
+                    {collocation.meaning}
+                  </div>
                 </div>
-                <div className="text-gray-700 text-xs sm:text-sm break-words">
-                  {collocation.meaning}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+          <Separator className="my-3 sm:my-4" />
+        </>
       )}
 
       {/* Example Sentences */}
       {wordData.example_sentences && wordData.example_sentences.length > 0 && (
-        <div className="bg-purple-50 rounded-lg p-3 sm:p-4">
-          <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-purple-800 mb-3">
-            <Headphones className="w-5 h-5" /> 精选例句
-          </h3>
-          <div className="space-y-3">
-            {wordData.example_sentences.map((example, index) => (
-              <div key={index} className="bg-white rounded-md border border-purple-100 p-3">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <p className="font-medium text-gray-800 text-sm sm:text-base break-words flex-1">
-                    {example.sentence}
-                  </p>
-                  <button
-                    onClick={() => playPronunciation(example.sentence)}
-                    className="flex items-center gap-1 px-2 py-1 bg-purple-100 hover:bg-purple-200 rounded transition-colors text-purple-600 text-xs flex-shrink-0"
-                    title="播放例句发音"
-                  >
-                    🔊
-                  </button>
+        <>
+          <div className="bg-purple-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
+            <h3 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-purple-800 mb-3">
+              <Headphones className="w-5 h-5" /> 精选例句
+            </h3>
+            <div className="space-y-3">
+              {wordData.example_sentences.map((example, index) => (
+                <div key={index} className="bg-white rounded-md border border-purple-100 p-3">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <p className="font-medium text-gray-800 text-sm sm:text-base break-words flex-1">
+                      {example.sentence}
+                    </p>
+                    <button
+                      onClick={() => playPronunciation(example.sentence)}
+                      className="flex items-center gap-1 px-2 py-1 bg-purple-100 hover:bg-purple-200 rounded transition-colors text-purple-600 text-xs flex-shrink-0"
+                      title="播放例句发音"
+                    >
+                      🔊
+                    </button>
+                  </div>
+                  <div className="text-gray-600 text-xs sm:text-sm break-words">
+                    {example.translation}
+                  </div>
                 </div>
-                <div className="text-gray-600 text-xs sm:text-sm break-words">
-                  {example.translation}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+          <Separator className="my-3 sm:my-4" />
+        </>
       )}
 
       {/* Footer */}
