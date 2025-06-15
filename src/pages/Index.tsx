@@ -100,7 +100,7 @@ const Index = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 leading-tight">
-            🤖 AI单词学习卡片
+            🤖 AI音标学习工具
           </h1>
         </div>
 
