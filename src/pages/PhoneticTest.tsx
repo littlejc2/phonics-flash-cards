@@ -50,7 +50,7 @@ const PhoneticTest = () => {
     const targetVowel = vowelData.vowel;
     const similarWords = vowelData.similarWords || [];
 
-    // Generate 3 questions with different word sets
+    // Generate 3 questions with completely different word sets
     const generatedQuestions: TestQuestion[] = [
       {
         id: 1,
@@ -77,7 +77,7 @@ const PhoneticTest = () => {
 
   const generateOptions = (targetWord: string, similarWords: any[], targetVowel: string, wordSet: string) => {
     // Get correct words from similar words
-    const correctWords = similarWords.slice(0, 2).map(item => {
+    const correctWords = similarWords.slice(0, 1).map(item => {
       if (typeof item === 'string') {
         return {
           word: item,
@@ -92,34 +92,42 @@ const PhoneticTest = () => {
       };
     });
 
-    // Define different word sets for variety
+    // Define completely different word sets for each question
     const wordSets = {
       set1: [
         { word: 'apple', pronunciation: '/ˈæpəl/', isCorrect: false },
         { word: 'house', pronunciation: '/haʊs/', isCorrect: false },
         { word: 'blue', pronunciation: '/bluː/', isCorrect: false },
-        { word: 'chair', pronunciation: '/tʃer/', isCorrect: false }
+        { word: 'chair', pronunciation: '/tʃer/', isCorrect: false },
+        { word: 'tree', pronunciation: '/triː/', isCorrect: false },
+        { word: 'book', pronunciation: '/bʊk/', isCorrect: false }
       ],
       set2: [
         { word: 'orange', pronunciation: '/ˈɔːrɪndʒ/', isCorrect: false },
         { word: 'table', pronunciation: '/ˈteɪbəl/', isCorrect: false },
         { word: 'green', pronunciation: '/ɡriːn/', isCorrect: false },
-        { word: 'phone', pronunciation: '/foʊn/', isCorrect: false }
+        { word: 'phone', pronunciation: '/foʊn/', isCorrect: false },
+        { word: 'yellow', pronunciation: '/ˈjeloʊ/', isCorrect: false },
+        { word: 'purple', pronunciation: '/ˈpɜːrpəl/', isCorrect: false }
       ],
       set3: [
         { word: 'water', pronunciation: '/ˈwɔːtər/', isCorrect: false },
         { word: 'school', pronunciation: '/skuːl/', isCorrect: false },
         { word: 'happy', pronunciation: '/ˈhæpi/', isCorrect: false },
-        { word: 'window', pronunciation: '/ˈwɪndoʊ/', isCorrect: false }
+        { word: 'window', pronunciation: '/ˈwɪndoʊ/', isCorrect: false },
+        { word: 'garden', pronunciation: '/ˈɡɑːrdən/', isCorrect: false },
+        { word: 'kitchen', pronunciation: '/ˈkɪtʃən/', isCorrect: false }
       ]
     };
 
-    // Select incorrect words from the specified set
-    const incorrectWords = wordSets[wordSet as keyof typeof wordSets]
-      .filter(item => !correctWords.some(correct => correct.word === item.word));
+    // Select incorrect words from the specified set, ensuring no duplicates
+    const selectedSet = wordSets[wordSet as keyof typeof wordSets];
+    const incorrectWords = selectedSet
+      .filter(item => !correctWords.some(correct => correct.word === item.word))
+      .slice(0, 3); // Take 3 incorrect words
 
-    // Combine and shuffle - take 2 incorrect words to make 4 total options
-    const allOptions = [...correctWords, ...incorrectWords.slice(0, 2)];
+    // Combine and shuffle - 1 correct + 3 incorrect = 4 total options
+    const allOptions = [...correctWords, ...incorrectWords];
     return allOptions.sort(() => Math.random() - 0.5);
   };
 
