@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -83,6 +82,28 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     }
   };
 
+  // Sort and limit similar words - prioritize words with same letters
+  const getSortedSimilarWords = (similarWords: Array<{word: string; pronunciation: string; meaning: string}>, originalWord: string, vowel: string) => {
+    if (!similarWords || !Array.isArray(similarWords)) return [];
+    
+    // Sort by: 1) words with same letters as original word, 2) alphabetically
+    const sorted = [...similarWords].sort((a, b) => {
+      const aHasSameLetters = a.word.toLowerCase().includes(vowel.toLowerCase());
+      const bHasSameLetters = b.word.toLowerCase().includes(vowel.toLowerCase());
+      
+      if (aHasSameLetters && !bHasSameLetters) return -1;
+      if (!aHasSameLetters && bHasSameLetters) return 1;
+      
+      return a.word.localeCompare(b.word);
+    });
+    
+    // Limit to 2-3 words
+    return sorted.slice(0, 3);
+  };
+
+  console.log('WordCard data:', wordData);
+  console.log('Vowels data:', wordData.vowels);
+
   return (
     <Card className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
       {/* Header */}
@@ -137,39 +158,50 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                   }} 
                 />
               </div>
-              {wordData.vowels.map((vowelData, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="font-semibold text-orange-700">
-                    #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {vowelData.similarWords?.map((wordObj, wordIndex) => (
-                      <div key={wordIndex} className="bg-white rounded-lg p-3 shadow-sm border">
-                        <div className="flex items-center justify-between mb-2">
-                          <span 
-                            className="text-lg font-bold text-gray-800"
-                            dangerouslySetInnerHTML={{ 
-                              __html: highlightVowels(wordObj.word, vowelData.vowel) 
-                            }}
-                          />
-                          <button
-                            onClick={() => playPronunciation(wordObj.word)}
-                            className="flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 rounded transition-colors text-blue-600 text-xs"
-                          >
-                            🔊
-                          </button>
-                        </div>
-                        <div className="text-sm text-blue-600 font-mono mb-1">
-                          [{wordObj.pronunciation}]
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          {wordObj.meaning}
-                        </div>
+              {wordData.vowels.map((vowelData, index) => {
+                const sortedSimilarWords = getSortedSimilarWords(vowelData.similarWords, wordData.word, vowelData.vowel);
+                console.log(`Vowel ${index} similar words:`, sortedSimilarWords);
+                
+                return (
+                  <div key={index} className="space-y-2">
+                    <div className="font-semibold text-orange-700">
+                      #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
+                    </div>
+                    {sortedSimilarWords.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {sortedSimilarWords.map((wordObj, wordIndex) => (
+                          <div key={wordIndex} className="bg-white rounded-lg p-3 shadow-sm border">
+                            <div className="flex items-center justify-between mb-2">
+                              <span 
+                                className="text-lg font-bold text-gray-800"
+                                dangerouslySetInnerHTML={{ 
+                                  __html: highlightVowels(wordObj.word, vowelData.vowel) 
+                                }}
+                              />
+                              <button
+                                onClick={() => playPronunciation(wordObj.word)}
+                                className="flex items-center gap-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 rounded transition-colors text-blue-600 text-xs"
+                              >
+                                🔊
+                              </button>
+                            </div>
+                            <div className="text-sm text-blue-600 font-mono mb-1">
+                              [{wordObj.pronunciation}]
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              {wordObj.meaning}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <div className="text-sm text-gray-500 italic">
+                        暂无同音词数据
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <Separator className="my-4" />
@@ -208,4 +240,3 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
 };
 
 export default WordCard;
-
