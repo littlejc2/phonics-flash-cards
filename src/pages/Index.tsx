@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
@@ -100,7 +101,7 @@ const Index = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 leading-tight">
-            🤖 AI智能单词学习卡片
+            🤖 AI单词学习卡片
           </h1>
         </div>
 
