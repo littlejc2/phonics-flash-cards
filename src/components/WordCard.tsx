@@ -15,7 +15,7 @@ interface WordData {
   vowels: Array<{
     vowel: string;
     sound: string;
-    similarWords: Array<{
+    similarWords: Array<string | {
       word: string;
       pronunciation: string;
       meaning: string;
@@ -82,15 +82,27 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     }
   };
 
-  // Sort and limit similar words - prioritize words with same letters
-  const getSortedSimilarWords = (similarWords: Array<{word: string; pronunciation: string; meaning: string}>, originalWord: string, vowel: string) => {
+  // Sort and limit similar words - handle both string and object formats
+  const getSortedSimilarWords = (similarWords: Array<string | {word: string; pronunciation: string; meaning: string}>, originalWord: string, vowel: string) => {
     if (!similarWords || !Array.isArray(similarWords)) return [];
     
     // Safely handle undefined vowel
     const safeVowel = vowel?.toLowerCase() || '';
     
+    // Convert strings to objects if needed
+    const normalizedWords = similarWords.map(item => {
+      if (typeof item === 'string') {
+        return {
+          word: item,
+          pronunciation: `/${item}/`, // Default pronunciation
+          meaning: '词义待补充'
+        };
+      }
+      return item;
+    });
+    
     // Sort by: 1) words with same letters as original word, 2) alphabetically
-    const sorted = [...similarWords].sort((a, b) => {
+    const sorted = [...normalizedWords].sort((a, b) => {
       // Safely handle undefined word properties
       const aWord = a.word?.toLowerCase() || '';
       const bWord = b.word?.toLowerCase() || '';
