@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -68,13 +69,28 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
     return word.replace(regex, `<span class="bg-yellow-300 text-red-600 font-bold underline">$1</span>`);
   };
 
+  const playPronunciation = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(wordData.word);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+  };
+
   return (
     <Card className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg">
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">{wordData.word}</h1>
-        <div className="flex items-center justify-center gap-2 mb-2">
+        <div className="flex items-center justify-center gap-3 mb-2">
           <span className="text-lg text-blue-600 font-mono">[{wordData.pronunciation}]</span>
+          <button
+            onClick={playPronunciation}
+            className="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors text-blue-700 text-sm"
+          >
+            🔊 发音
+          </button>
           <span className="text-sm text-gray-500">🤖 AI生成</span>
         </div>
       </div>
@@ -122,7 +138,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                     #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {wordData.similarWords?.map((word, wordIndex) => (
+                    {vowelData.similarWords?.map((word, wordIndex) => (
                       <div key={wordIndex} className="flex flex-col items-center">
                         <span 
                           className="px-2 py-1 bg-yellow-200 rounded text-sm font-medium"
@@ -138,35 +154,6 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-          <Separator className="my-4" />
-        </>
-      )}
-
-      {/* Quick Understanding */}
-      {wordData.etymology && (
-        <>
-          <div className="bg-purple-50 rounded-lg p-4 mb-4">
-            <h3 className="flex items-center gap-2 text-lg font-semibold text-purple-800 mb-3">
-              ⚡️ 快速理解
-            </h3>
-            <div className="space-y-2">
-              <div className="text-center">
-                <span className="font-medium text-purple-700">{wordData.etymology.root}</span>
-                <span className="mx-2">·</span>
-                <span className="font-medium text-purple-700">{wordData.etymology.affix}</span>
-                <span className="mx-2">=</span>
-                <span className="text-blue-600">{wordData.etymology.coreMeaning}</span>
-                <span className="mx-2">+</span>
-                <span className="text-green-600">{wordData.etymology.changeMeaning}</span>
-              </div>
-              <div className="text-center mt-3">
-                <div className="text-2xl">↓</div>
-                <div className="bg-white p-3 rounded-md shadow-sm mt-2">
-                  <span className="text-gray-800 font-medium">{wordData.etymology.finalMeaning}</span>
-                </div>
-              </div>
             </div>
           </div>
           <Separator className="my-4" />
