@@ -50,7 +50,7 @@ serve(async (req) => {
       );
     }
 
-    // Generate word data using Gemini - 修正API端点
+    // Generate word data using Gemini - 修正API端点和提示词
     const prompt = `请为英语单词"${word}"生成完整的学习信息，以JSON格式返回，包含以下字段：
     {
       "word": "${word}",
@@ -63,7 +63,20 @@ serve(async (req) => {
         {
           "vowel": "主要元音字母",
           "sound": "音标发音",
-          "similarWords": ["3-5个同音规律的单词"]
+          "similarWords": [
+            {
+              "word": "同音规律单词1",
+              "pronunciation": "音标"
+            },
+            {
+              "word": "同音规律单词2", 
+              "pronunciation": "音标"
+            },
+            {
+              "word": "同音规律单词3",
+              "pronunciation": "音标"
+            }
+          ]
         }
       ],
       "etymology": {
@@ -81,6 +94,11 @@ serve(async (req) => {
         }
       ]
     }
+    
+    注意：
+    1. similarWords数组中每个单词都要有word和pronunciation两个字段
+    2. 同音词只需要2-3个即可，不要太多
+    3. 确保所有单词的pronunciation都是准确的音标格式
     
     请确保返回的是有效的JSON格式，不要包含其他文字说明。`;
 

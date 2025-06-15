@@ -15,7 +15,10 @@ interface WordData {
   vowels: Array<{
     vowel: string;
     sound: string;
-    similarWords: string[];
+    similarWords: Array<{
+      word: string;
+      pronunciation: string;
+    }>;
   }>;
   etymology: {
     root: string;
@@ -123,14 +126,18 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
                     #{vowelData.vowel}：例子{wordData.word}，{vowelData.sound}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {vowelData.similarWords?.map((word, wordIndex) => (
-                      <span 
-                        key={wordIndex}
-                        className="px-2 py-1 bg-yellow-200 rounded text-sm font-medium"
-                        dangerouslySetInnerHTML={{ 
-                          __html: highlightVowels(word, vowelData.vowel) 
-                        }}
-                      />
+                    {vowelData.similarWords?.map((wordItem, wordIndex) => (
+                      <div key={wordIndex} className="flex flex-col items-center">
+                        <span 
+                          className="px-2 py-1 bg-yellow-200 rounded text-sm font-medium"
+                          dangerouslySetInnerHTML={{ 
+                            __html: highlightVowels(wordItem.word || wordItem, vowelData.vowel) 
+                          }}
+                        />
+                        <span className="text-xs text-gray-600 mt-1">
+                          [{wordItem.pronunciation || ''}]
+                        </span>
+                      </div>
                     ))}
                   </div>
                 </div>
