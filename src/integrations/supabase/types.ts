@@ -9,7 +9,80 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      user_word_cards: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string | null
+          word_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          word_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          word_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_word_cards_word_id_fkey"
+            columns: ["word_id"]
+            isOneToOne: false
+            referencedRelation: "words"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      words: {
+        Row: {
+          collocations: Json | null
+          created_at: string
+          etymology: Json | null
+          frequency: string | null
+          frequency_note: string | null
+          id: string
+          meaning: string | null
+          part_of_speech: string | null
+          pronunciation: string | null
+          updated_at: string
+          vowels: Json | null
+          word: string
+        }
+        Insert: {
+          collocations?: Json | null
+          created_at?: string
+          etymology?: Json | null
+          frequency?: string | null
+          frequency_note?: string | null
+          id?: string
+          meaning?: string | null
+          part_of_speech?: string | null
+          pronunciation?: string | null
+          updated_at?: string
+          vowels?: Json | null
+          word: string
+        }
+        Update: {
+          collocations?: Json | null
+          created_at?: string
+          etymology?: Json | null
+          frequency?: string | null
+          frequency_note?: string | null
+          id?: string
+          meaning?: string | null
+          part_of_speech?: string | null
+          pronunciation?: string | null
+          updated_at?: string
+          vowels?: Json | null
+          word?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
