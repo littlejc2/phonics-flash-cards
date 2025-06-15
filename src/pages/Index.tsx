@@ -1,10 +1,8 @@
-
-
 import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Share2, History, Camera } from 'lucide-react';
+import { ArrowLeft, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 
@@ -80,22 +78,6 @@ const Index = () => {
     }
   };
 
-  const handleShare = () => {
-    if (navigator.share && wordData) {
-      navigator.share({
-        title: `${wordData.word} - AI智能单词学习卡片`,
-        text: `我正在用AI学习单词"${wordData.word}"，快来看看这张智能生成的学习卡片！`,
-        url: window.location.href
-      }).catch(() => {
-        toast.error('分享失败，请尝试其他方式分享');
-      });
-    } else {
-      toast.info('分享提示', {
-        description: '您可以截图后通过社交媒体分享这张卡片'
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-4">
       <div className="container mx-auto max-w-6xl">
@@ -132,14 +114,6 @@ const Index = () => {
                   <Camera className="w-4 h-4" />
                   {isScreenshotting ? '截图中...' : '保存图片'}
                 </Button>
-                <Button 
-                  onClick={handleShare}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  <Share2 className="w-4 h-4" />
-                  分享卡片
-                </Button>
               </div>
             </div>
 
@@ -172,4 +146,3 @@ const Index = () => {
 };
 
 export default Index;
-
