@@ -50,7 +50,7 @@ serve(async (req) => {
       );
     }
 
-    // Generate word data using Gemini - 修正API端点和提示词
+    // Generate word data using Gemini
     const prompt = `请为英语单词"${word}"生成完整的学习信息，以JSON格式返回，包含以下字段：
     {
       "word": "${word}",
@@ -112,8 +112,8 @@ serve(async (req) => {
     
     请确保返回的是有效的JSON格式，不要包含其他文字说明。`;
 
-    // 使用正确的Gemini API端点
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
+    // 使用正确的Gemini API端点 - 修改为v1和正确的模型名称
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
