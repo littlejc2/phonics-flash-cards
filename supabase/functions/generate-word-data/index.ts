@@ -60,7 +60,7 @@ serve(async (req) => {
       );
     }
 
-    // Generate word data using Gemini - 修正API端点和提示词
+    // Generate word data using Gemini
     const prompt = `请为英语单词"${word}"生成完整的学习信息，以JSON格式返回，包含以下字段：
     {
       "word": "${word}",
