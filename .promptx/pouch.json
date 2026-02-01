@@ -1,0 +1,29 @@
+{
+  "currentState": "service_discovery",
+  "stateHistory": [
+    {
+      "from": "initial",
+      "command": "welcome",
+      "timestamp": "2025-07-20T05:26:03.903Z",
+      "args": []
+    },
+    {
+      "from": "service_discovery",
+      "command": "init",
+      "timestamp": "2025-07-20T05:26:15.582Z",
+      "args": [
+        {
+          "workingDirectory": "d:\\Github\\phonics-flash-cards",
+          "ideType": "cursor"
+        }
+      ]
+    },
+    {
+      "from": "initialized",
+      "command": "welcome",
+      "timestamp": "2025-07-20T05:26:37.791Z",
+      "args": []
+    }
+  ],
+  "lastUpdated": "2025-07-20T05:26:37.794Z"
+}
