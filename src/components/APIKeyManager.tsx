@@ -71,24 +71,37 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
 
   // 从localStorage加载已保存的API密钥和模型
   useEffect(() => {
+    // 从localStorage加载已保存的API密钥和模型
     const savedGeminiKey = localStorage.getItem('gemini_api_key') || '';
     const savedDeepseekKey = localStorage.getItem('deepseek_api_key') || '';
-    const savedGeminiModel = localStorage.getItem('gemini_model') || getCurrentModel('gemini');
-    const savedDeepseekModel = localStorage.getItem('deepseek_model') || getCurrentModel('deepseek');
+    
+    // 获取保存的模型，如果不存在或无效，则使用默认值
+    let savedGeminiModel = localStorage.getItem('gemini_model');
+    const availableGeminiModels = getAvailableModels('gemini');
+    if (!savedGeminiModel || !availableGeminiModels.includes(savedGeminiModel)) {
+      savedGeminiModel = 'gemini-3-pro-preview';
+    }
+
+    let savedDeepseekModel = localStorage.getItem('deepseek_model');
+    const availableDeepseekModels = getAvailableModels('deepseek');
+    if (!savedDeepseekModel || !availableDeepseekModels.includes(savedDeepseekModel)) {
+      savedDeepseekModel = 'deepseek-chat';
+    }
+
     const savedProvider = (localStorage.getItem('selected_ai_provider') as AIProvider) || 'gemini';
 
     setGeminiConfig(prev => ({
       ...prev,
       key: savedGeminiKey,
       isValid: validateAPIKey('gemini', savedGeminiKey),
-      model: savedGeminiModel
+      model: savedGeminiModel || 'gemini-3-pro-preview'
     }));
 
     setDeepseekConfig(prev => ({
       ...prev,
       key: savedDeepseekKey,
       isValid: validateAPIKey('deepseek', savedDeepseekKey),
-      model: savedDeepseekModel
+      model: savedDeepseekModel || 'deepseek-chat'
     }));
 
     setSelectedProvider(savedProvider);
@@ -350,6 +363,7 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
                         <SelectContent>
                           {getAvailableModels(provider).map((model) => {
                             const modelInfo = getModelInfo(provider, model);
+                            if (!modelInfo) return null; // Add safety check
                             return (
                               <SelectItem key={model} value={model}>
                                 <div className="flex flex-col">
@@ -368,7 +382,7 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
                       </Select>
 
                       {/* 模型特性显示 */}
-                      {config.model && (
+                      {config.model && getModelInfo(provider, config.model) && (
                         <div className="mt-2">
                           <div className="text-xs text-gray-600">
                             <strong>特性：</strong>

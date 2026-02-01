@@ -3,12 +3,12 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { AIProviderSelector } from './AIProviderSelector';
 import { SimpleModelSelector } from './ModelSelector';
 import { getCurrentProvider, getCurrentModel, type AIProvider } from '@/config/gemini';
+import { generateWordData } from '@/services/aiService';
 
 interface SimpleWordFormProps {
   onSubmit: (wordData: any) => void;
@@ -22,46 +22,30 @@ const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!word.trim()) {
       toast.error('请输入单词');
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
       console.log('Generating word data for:', word);
-      
-      const { data, error } = await supabase.functions.invoke('generate-word-data', {
-        body: {
-          word: word.trim().toLowerCase(),
-          provider: selectedProvider,
-          model: selectedModel
-        }
-      });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
+      const wordData = await generateWordData(
+        word.trim().toLowerCase(),
+        selectedProvider,
+        selectedModel
+      );
 
-      if (data?.error) {
-        console.error('Function returned error:', data.error);
-        throw new Error(data.error);
-      }
+      console.log('Generated word data:', wordData);
+      onSubmit(wordData);
 
-      if (!data?.wordData) {
-        throw new Error('未收到单词数据');
-      }
-
-      console.log('Generated word data:', data.wordData);
-      onSubmit(data.wordData);
-      
       toast.success('单词卡片生成成功！', {
         description: 'AI已自动分析并生成完整的学习信息'
       });
-      
+
     } catch (error) {
       console.error('Error generating word data:', error);
       toast.error('生成失败', {
