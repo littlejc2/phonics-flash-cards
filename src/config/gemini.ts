@@ -3,7 +3,11 @@ export type AIProvider = 'gemini' | 'deepseek';
 
 // Model Types
 export type GeminiModel =
-  | 'gemini-2.5-pro-latest'
+  | 'gemini-3-pro-preview'
+  | 'gemini-3-flash-preview'
+  | 'gemini-2.5-pro'
+  | 'gemini-2.5-flash'
+  | 'gemini-2.5-flash-lite'
   | 'gemini-2.0-flash-exp'
   | 'gemini-1.5-flash-latest'
   | 'gemini-1.5-pro-latest'
@@ -13,36 +17,60 @@ export type DeepSeekModel = 'deepseek-chat' | 'deepseek-coder';
 // Model Information
 export const modelInfo = {
   gemini: {
-    'gemini-2.5-pro-latest': {
-      name: 'Gemini 2.5 Pro',
-      description: '最新最强大的模型，顶级性能和理解能力',
-      features: ['顶级性能', '最强推理', '多模态支持', '最新技术'],
-      recommended: true
-    },
-    'gemini-2.0-flash-exp': {
-      name: 'Gemini 2.0 Flash (实验版)',
-      description: '新一代快速模型，平衡性能与速度',
-      features: ['新一代技术', '快速响应', '实验性功能', '性能提升'],
-      recommended: false
-    },
-    'gemini-1.5-flash-latest': {
-      name: 'Gemini 1.5 Flash',
-      description: '成熟快速模型，响应速度快，成本低',
-      features: ['快速响应', '成本低', '适合日常使用', '稳定可靠'],
-      recommended: false
-    },
-    'gemini-1.5-pro-latest': {
-      name: 'Gemini 1.5 Pro',
-      description: '成熟专业版模型，功能强大，质量高',
-      features: ['高质量输出', '复杂推理', '多模态支持', '成熟稳定'],
-      recommended: false
-    },
-    'gemini-1.0-pro': {
-      name: 'Gemini 1.0 Pro',
-      description: '经典稳定版本，兼容性最好',
-      features: ['稳定可靠', '兼容性好', '经过验证', '成本最低'],
-      recommended: false
-    }
+  'gemini-3-pro-preview': {
+    name: 'Gemini 3 Pro (预览版)',
+    description: '全球最强大的多模态模型，具备最智能的代理和编程能力',
+    features: ['顶级性能', '最强推理', '多模态支持', '最新技术', '思考能力'],
+    recommended: true
+  },
+  'gemini-3-flash-preview': {
+    name: 'Gemini 3 Flash (预览版)',
+    description: '最平衡的模型，专为速度、规模和前沿智能而构建',
+    features: ['新一代技术', '快速响应', '实验性功能', '性能提升', '思考能力'],
+    recommended: false
+  },
+  'gemini-2.5-pro': {
+    name: 'Gemini 2.5 Pro',
+    description: '先进的思考模型，擅长处理复杂的代码、数学和STEM问题',
+    features: ['高级思考', '复杂推理', '长上下文', '数据分析'],
+    recommended: false
+  },
+  'gemini-2.5-flash': {
+    name: 'Gemini 2.5 Flash',
+    description: '性价比最佳模型，适合大规模处理和低延迟任务',
+    features: ['性价比最佳', '快速响应', '适合大规模使用', '思考能力'],
+    recommended: false
+  },
+  'gemini-2.5-flash-lite': {
+    name: 'Gemini 2.5 Flash-Lite',
+    description: '超快速度模型，优化了成本效率和吞吐量',
+    features: ['超快速度', '成本最低', '高吞吐量', '思考能力'],
+    recommended: false
+  },
+  'gemini-2.0-flash-exp': {
+    name: 'Gemini 2.0 Flash (实验版)',
+    description: '下一代功能和改进能力 (将于2026年3月31日停用)',
+    features: ['下一代技术', '快速响应', '实验性功能'],
+    recommended: false
+  },
+  'gemini-1.5-flash-latest': {
+    name: 'Gemini 1.5 Flash',
+    description: '成熟快速模型，响应速度快，成本低',
+    features: ['快速响应', '成本低', '适合日常使用', '稳定可靠'],
+    recommended: false
+  },
+  'gemini-1.5-pro-latest': {
+    name: 'Gemini 1.5 Pro',
+    description: '成熟专业版模型，功能强大，质量高',
+    features: ['高质量输出', '复杂推理', '多模态支持', '成熟稳定'],
+    recommended: false
+  },
+  'gemini-1.0-pro': {
+    name: 'Gemini 1.0 Pro',
+    description: '经典稳定版本，兼容性最好',
+    features: ['稳定可靠', '兼容性好', '经过验证', '成本最低'],
+    recommended: false
+  }
   },
   deepseek: {
     'deepseek-chat': {
@@ -64,7 +92,7 @@ export const modelInfo = {
 export const geminiConfig = {
   apiKey: import.meta.env.VITE_GEMINI_API_KEY || '',
   baseUrl: import.meta.env.VITE_GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta',
-  model: import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.5-pro-latest'
+  model: import.meta.env.VITE_GEMINI_MODEL || 'gemini-3-pro-preview'
 };
 
 // DeepSeek Configuration
@@ -117,4 +145,3 @@ export const getModelInfo = (provider: AIProvider, model: string) => {
 export const getGeminiApiUrl = (endpoint: string) => {
   return `${geminiConfig.baseUrl}/${endpoint}?key=${geminiConfig.apiKey}`;
 };
-

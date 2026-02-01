@@ -1,5 +1,0 @@
-
-project_id = "ufxvhcpcaqvqharbabzw"
-
-[functions.generate-word-data]
-verify_jwt = false
