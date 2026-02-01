@@ -14,8 +14,8 @@ serve(async (req) => {
   }
 
   try {
-    const { word } = await req.json();
-    
+    const { word, provider = 'gemini', model } = await req.json();
+
     if (!word) {
       return new Response(
         JSON.stringify({ error: 'Word is required' }),
@@ -23,8 +23,18 @@ serve(async (req) => {
       );
     }
 
+    // Check API keys based on provider
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!geminiApiKey) {
+    const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
+
+    if (provider === 'deepseek' && !deepseekApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'DeepSeek API key not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (provider === 'gemini' && !geminiApiKey) {
       return new Response(
         JSON.stringify({ error: 'Gemini API key not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -66,15 +76,18 @@ serve(async (req) => {
           "similarWords": [
             {
               "word": "同音规律单词1",
-              "pronunciation": "音标"
+              "pronunciation": "音标",
+              "meaning": "简单中文翻译"
             },
             {
-              "word": "同音规律单词2", 
-              "pronunciation": "音标"
+              "word": "同音规律单词2",
+              "pronunciation": "音标",
+              "meaning": "简单中文翻译"
             },
             {
               "word": "同音规律单词3",
-              "pronunciation": "音标"
+              "pronunciation": "音标",
+              "meaning": "简单中文翻译"
             }
           ]
         }
@@ -106,36 +119,78 @@ serve(async (req) => {
     }
     
     注意：
-    1. similarWords数组中每个单词都要有word和pronunciation两个字段
-    2. 同音词、常用搭配和例句各提供2-3个即可，不要太多
-    3. 确保所有单词的pronunciation都是准确的音标格式
-    
+    1. similarWords数组中每个单词都要有word、pronunciation和meaning三个字段
+    2. meaning字段应该是简单的中文翻译，1-3个汉字即可，如"书"、"猫"、"工作"等
+    3. 同音词、常用搭配和例句各提供2-3个即可，不要太多
+    4. 确保所有单词的pronunciation都是准确的音标格式
+    5. 选择的同音词应该是常见的基础词汇，便于学习记忆
+
     请确保返回的是有效的JSON格式，不要包含其他文字说明。`;
 
-    // 使用正确的Gemini API端点
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{ text: prompt }]
-        }]
-      }),
-    });
+    // Generate content using selected AI provider
+    let response: Response;
+    let generatedText: string;
 
-    if (!response.ok) {
-      console.error(`Gemini API error: ${response.status} ${response.statusText}`);
-      const errorText = await response.text();
-      console.error('Gemini API error response:', errorText);
-      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+    if (provider === 'deepseek') {
+      // DeepSeek API call
+      response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${deepseekApiKey}`,
+        },
+        body: JSON.stringify({
+          model: model || 'deepseek-chat',
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 4000,
+          stream: false
+        }),
+      });
+
+      if (!response.ok) {
+        console.error(`DeepSeek API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('DeepSeek API error response:', errorText);
+        throw new Error(`DeepSeek API error: ${response.status} ${response.statusText}`);
+      }
+
+      const deepseekData = await response.json();
+      console.log('DeepSeek API response:', deepseekData);
+
+      generatedText = deepseekData.choices?.[0]?.message?.content;
+    } else {
+      // Gemini API call (default)
+      const geminiModel = model || 'gemini-1.5-flash-latest';
+      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
+        }),
+      });
+
+      if (!response.ok) {
+        console.error(`Gemini API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Gemini API error response:', errorText);
+        throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+      }
+
+      const geminiData = await response.json();
+      console.log('Gemini API response:', geminiData);
+
+      generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
     }
-
-    const geminiData = await response.json();
-    console.log('Gemini API response:', geminiData);
-    
-    const generatedText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!generatedText) {
       console.error('No content generated by Gemini:', geminiData);

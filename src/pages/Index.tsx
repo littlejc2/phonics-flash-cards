@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SimpleWordForm from '@/components/SimpleWordForm';
 import WordCard from '@/components/WordCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Camera, Target } from 'lucide-react';
+import { ArrowLeft, Camera, Target, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
@@ -99,14 +99,44 @@ const Index = () => {
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2 leading-tight">
-            🤖 AI音标学习工具
-          </h1>
+          <div className="flex justify-between items-center mb-4">
+            <div></div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight">
+              🤖 AI音标学习工具
+            </h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/api-setup')}
+              className="flex items-center gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              API配置
+            </Button>
+          </div>
         </div>
 
         {/* Main Content */}
         {currentView === 'input' ? (
-          <SimpleWordForm onSubmit={handleWordSubmit} />
+          <div className="space-y-6">
+            <SimpleWordForm onSubmit={handleWordSubmit} />
+
+            {/* API配置提示 */}
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-2">
+                首次使用？需要配置AI API密钥
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/api-setup')}
+                className="flex items-center gap-2 mx-auto"
+              >
+                <Settings className="w-4 h-4" />
+                配置API密钥
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="space-y-6">
             {/* Navigation */}

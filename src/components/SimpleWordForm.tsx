@@ -6,6 +6,9 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { AIProviderSelector } from './AIProviderSelector';
+import { SimpleModelSelector } from './ModelSelector';
+import { getCurrentProvider, getCurrentModel, type AIProvider } from '@/config/gemini';
 
 interface SimpleWordFormProps {
   onSubmit: (wordData: any) => void;
@@ -14,6 +17,8 @@ interface SimpleWordFormProps {
 const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
   const [word, setWord] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<AIProvider>(getCurrentProvider());
+  const [selectedModel, setSelectedModel] = useState<string>(getCurrentModel());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +34,11 @@ const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
       console.log('Generating word data for:', word);
       
       const { data, error } = await supabase.functions.invoke('generate-word-data', {
-        body: { word: word.trim().toLowerCase() }
+        body: {
+          word: word.trim().toLowerCase(),
+          provider: selectedProvider,
+          model: selectedModel
+        }
       });
 
       if (error) {
@@ -93,6 +102,32 @@ const SimpleWordForm: React.FC<SimpleWordFormProps> = ({ onSubmit }) => {
             disabled={isLoading}
             autoFocus
           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-lg">选择AI提供商</Label>
+            <div className="mt-2">
+              <AIProviderSelector
+                onProviderChange={(provider) => {
+                  setSelectedProvider(provider);
+                  setSelectedModel(getCurrentModel(provider));
+                }}
+                showStatus={false}
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-lg">选择模型</Label>
+            <div className="mt-2">
+              <SimpleModelSelector
+                provider={selectedProvider}
+                value={selectedModel}
+                onValueChange={setSelectedModel}
+              />
+            </div>
+          </div>
         </div>
 
         <Button 
