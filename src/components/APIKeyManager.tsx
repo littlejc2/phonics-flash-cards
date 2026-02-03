@@ -21,6 +21,7 @@ interface APIKeyConfig {
   isVisible: boolean;
   isValid: boolean;
   model: string;
+  baseUrl?: string;
 }
 
 const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
@@ -28,7 +29,8 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
     key: '',
     isVisible: false,
     isValid: false,
-    model: 'gemini-2.5-pro-latest'
+    model: 'gemini-3-pro-preview',
+    baseUrl: ''
   });
 
   const [deepseekConfig, setDeepseekConfig] = useState<APIKeyConfig>({
@@ -74,6 +76,7 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
     // 从localStorage加载已保存的API密钥和模型
     const savedGeminiKey = localStorage.getItem('gemini_api_key') || '';
     const savedDeepseekKey = localStorage.getItem('deepseek_api_key') || '';
+    const savedGeminiBaseUrl = localStorage.getItem('gemini_base_url') || '';
     
     // 获取保存的模型，如果不存在或无效，则使用默认值
     let savedGeminiModel = localStorage.getItem('gemini_model');
@@ -94,7 +97,8 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
       ...prev,
       key: savedGeminiKey,
       isValid: validateAPIKey('gemini', savedGeminiKey),
-      model: savedGeminiModel || 'gemini-3-pro-preview'
+      model: savedGeminiModel || 'gemini-3-pro-preview',
+      baseUrl: savedGeminiBaseUrl
     }));
 
     setDeepseekConfig(prev => ({
@@ -174,6 +178,13 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
       localStorage.setItem('gemini_model', geminiConfig.model);
       localStorage.setItem('deepseek_model', deepseekConfig.model);
       localStorage.setItem('selected_ai_provider', selectedProvider);
+      
+      // 保存Gemini Base URL
+      if (geminiConfig.baseUrl) {
+        localStorage.setItem('gemini_base_url', geminiConfig.baseUrl.trim());
+      } else {
+        localStorage.removeItem('gemini_base_url');
+      }
 
       // 更新全局配置（通过重新加载页面或事件）
       if (onKeysUpdated) {
@@ -207,8 +218,9 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
       localStorage.removeItem('gemini_model');
       localStorage.removeItem('deepseek_model');
       localStorage.removeItem('selected_ai_provider');
+      localStorage.removeItem('gemini_base_url');
 
-      setGeminiConfig({ key: '', isVisible: false, isValid: false, model: 'gemini-2.5-pro-latest' });
+      setGeminiConfig({ key: '', isVisible: false, isValid: false, model: 'gemini-3-pro-preview', baseUrl: '' });
       setDeepseekConfig({ key: '', isVisible: false, isValid: false, model: 'deepseek-chat' });
       setSelectedProvider('gemini');
 
@@ -344,6 +356,23 @@ const APIKeyManager: React.FC<APIKeyManagerProps> = ({ onKeysUpdated }) => {
                         </div>
                       )}
                     </div>
+
+                    {/* Gemini Base URL (Only for Gemini) */}
+                    {provider === 'gemini' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="gemini-base-url">代理地址 (可选)</Label>
+                        <Input
+                          id="gemini-base-url"
+                          type="text"
+                          value={geminiConfig.baseUrl || ''}
+                          onChange={(e) => setGeminiConfig({ ...geminiConfig, baseUrl: e.target.value })}
+                          placeholder="例如: https://my-proxy.com (默认为 Google 官方 API)"
+                        />
+                        <p className="text-xs text-gray-500">
+                          如果你在中国大陆且没有系统级代理，可以配置反向代理地址。
+                        </p>
+                      </div>
+                    )}
 
                     {/* 模型选择 */}
                     <div className="space-y-2">

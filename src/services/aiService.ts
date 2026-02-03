@@ -158,21 +158,36 @@ export async function generateWordData(
 
   } else {
     // Gemini API call
-    const geminiModel = model || 'gemini-1.5-flash-latest';
-    response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: prompt }]
-          }]
-        }),
+    const geminiModel = model || 'gemini-3-pro-preview';
+    
+    // Check for custom base URL
+    let baseUrl = 'https://generativelanguage.googleapis.com';
+    if (typeof window !== 'undefined') {
+      const storedBaseUrl = localStorage.getItem('gemini_base_url');
+      if (storedBaseUrl && storedBaseUrl.trim()) {
+        baseUrl = storedBaseUrl.trim().replace(/\/$/, ''); // Remove trailing slash
       }
-    );
+    }
+
+    try {
+      response = await fetch(
+        `${baseUrl}/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: prompt }]
+            }]
+          }),
+        }
+      );
+    } catch (fetchError) {
+      console.error('Gemini fetch error:', fetchError);
+      throw new Error('连接 Gemini API 失败。如果你在中国大陆，请配置代理地址或使用 DeepSeek。');
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
